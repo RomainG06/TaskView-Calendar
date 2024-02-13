@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:task_calendar/controller/task_controller.dart';
 import 'package:task_calendar/view/calendar.dart';
 import 'package:task_calendar/view/profil.dart';
 
@@ -11,6 +12,7 @@ class BottomNavBarWidget extends StatefulWidget {
 
 class _BottomNavBarWidgetState extends State<BottomNavBarWidget> {
   int _selectedIndex = 0;
+
   // Initialisation de ma liste de Widget index 0 et 1
   static final List<Widget> _widgetOptions = <Widget>[
     const CalendarPage(),
@@ -28,7 +30,7 @@ class _BottomNavBarWidgetState extends State<BottomNavBarWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('BottomNavigationBar Sample'),
+        title: const Text(''),
       ),
       body: _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
