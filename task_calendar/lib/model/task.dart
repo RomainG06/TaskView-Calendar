@@ -14,4 +14,16 @@ class Task {
     required this.date,
     required this.isNotification,
   });
+
+// Convertit une tache en json permettant de l'envoyer au bon format aus erveur
+  Map<String, dynamic> toJson() {
+    return {
+      'title': title,
+      'description': description,
+      'start': start.toIso8601String(),
+      'end': end.toIso8601String(),
+      'date': date.toIso8601String(),
+      'isNotification': isNotification,
+    };
+  }
 }
