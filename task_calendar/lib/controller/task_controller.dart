@@ -5,6 +5,9 @@ class TaskController {
   // La liste des tâches complete utilisé dans l'App
   List<Task> tasks = [];
 
+  // Structure de donnée Map Date - ListTaches
+  Map<DateTime, List<Task>> tasksDay = {};
+
   // Chargement local de tâche
   void loadTasks() {
     tasks = [

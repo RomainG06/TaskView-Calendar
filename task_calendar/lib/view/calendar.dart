@@ -13,10 +13,10 @@ class CalendarPage extends StatefulWidget {
 
 class _CalendarPageState extends State<CalendarPage> {
   final _formKey = GlobalKey<FormState>();
+  CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
-  // peut être mettre dans le controller
-  Map<DateTime, List<Task>> tasks = {};
+
   late final ValueNotifier<List<Task>> _selectedTasks;
   TaskController controller = TaskController();
 
@@ -41,7 +41,7 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   List<Task> getTaskByDay(DateTime day) {
-    return tasks[day] ?? [];
+    return controller.tasksDay[day] ?? [];
   }
 
   Future<void> addTask(BuildContext context) {
@@ -57,17 +57,30 @@ class _CalendarPageState extends State<CalendarPage> {
                       child: Text("Creer tache"),
                       onPressed: () {
                         setState(() {
-                          tasks.addAll({
-                            _selectedDay!: [
+                          // Verifie si la journée existe dans la Map si ou ajoute une tache dans la lsite associé
+                          if (controller.tasksDay.containsKey(_selectedDay)) {
+                            controller.tasksDay[_selectedDay]!.add(Task(
+                              title: "Tache test",
+                              description: "Test",
+                              start: DateTime.now(),
+                              end: DateTime.now(),
+                              date: DateTime.now(),
+                              isNotification: false,
+                            ));
+                            // Si la journée n'existe pas dans la map, créer une nouvelle entrée avec une liste contenant la nouvelle tâche.
+                          } else {
+                            controller.tasksDay[_selectedDay!] = [
                               Task(
-                                  title: "Tache test",
-                                  description: "Test",
-                                  start: DateTime.now(),
-                                  end: DateTime.now(),
-                                  date: DateTime.now(),
-                                  isNotification: false)
-                            ]
-                          });
+                                title: "Tache test",
+                                description: "Test",
+                                start: DateTime.now(),
+                                end: DateTime.now(),
+                                date: DateTime.now(),
+                                isNotification: false,
+                              )
+                            ];
+                          }
+                          _selectedTasks.value = getTaskByDay(_selectedDay!);
                         });
                       })));
         });
@@ -100,11 +113,25 @@ class _CalendarPageState extends State<CalendarPage> {
           calendarFormat: CalendarFormat.month,
           headerStyle: const HeaderStyle(formatButtonVisible: false),
           eventLoader: getTaskByDay,
+          onFormatChanged: (format) {
+            if (_calendarFormat != format) {
+              setState(() {
+                _calendarFormat = format;
+              });
+            }
+          },
         ),
         const SizedBox(
           height: 8,
         ),
-        Center(child: Text(controller.parseDateDay(_selectedDay!))),
+        Center(
+            child: Text(
+          controller.parseDateDay(_selectedDay!),
+          style: TextStyle(color: amberCustom),
+        )),
+        const SizedBox(
+          height: 8,
+        ),
         SizedBox(
           height: MediaQuery.of(context).size.height * 0.25,
           child: ValueListenableBuilder<List<Task>>(
