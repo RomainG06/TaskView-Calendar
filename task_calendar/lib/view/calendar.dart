@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:task_calendar/controller/services/notification.dart';
 import 'package:task_calendar/controller/task_controller.dart';
 import 'package:task_calendar/model/task.dart';
 import 'package:task_calendar/theme.dart';
@@ -57,6 +58,8 @@ class _CalendarPageState extends State<CalendarPage> {
                       child: Text("Creer tache"),
                       onPressed: () {
                         setState(() {
+                          NotificationService().showNotification(
+                              title: 'Tache1', body: 'Ajouté!');
                           // Verifie si la journée existe dans la Map si ou ajoute une tache dans la lsite associé
                           if (controller.tasksDay.containsKey(_selectedDay)) {
                             controller.tasksDay[_selectedDay]!.add(Task(
@@ -134,26 +137,29 @@ class _CalendarPageState extends State<CalendarPage> {
         ),
         SizedBox(
           height: MediaQuery.of(context).size.height * 0.25,
-          child: ValueListenableBuilder<List<Task>>(
-            valueListenable: _selectedTasks,
-            builder: (context, value, child) {
-              return ListView.builder(
-                itemCount: value.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    leading: Text(
-                        "Commence: ${controller.parseDateHour(value[index].start)} \n Termine : ${controller.parseDateHour(value[index].end)}"),
-                    title: Text(value[index].title),
-                    subtitle: Text(value[index].description),
-                    trailing: IconButton(
-                      icon: Icon(Icons.delete),
-                      onPressed: () {},
-                    ),
-                  );
-                },
-              );
-            },
-          ),
+          child: getTaskByDay(_selectedDay!).isNotEmpty
+              ? ValueListenableBuilder<List<Task>>(
+                  valueListenable: _selectedTasks,
+                  builder: (context, value, child) {
+                    return ListView.builder(
+                      itemCount: value.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          leading: Text(
+                              "Commence: ${controller.parseDateHour(value[index].start)} \n Termine : ${controller.parseDateHour(value[index].end)}"),
+                          title: Text(value[index].title),
+                          subtitle: Text(value[index].description),
+                          trailing: IconButton(
+                            icon: Icon(Icons.delete),
+                            onPressed: () {},
+                          ),
+                        );
+                      },
+                    );
+                  },
+                )
+              : const Center(
+                  child: Text("Vous n'avez pas de tâches sur cette journée")),
         )
       ]),
     );
