@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
+import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:task_calendar/controller/services/notification.dart';
 import 'package:task_calendar/controller/task_controller.dart';
@@ -17,6 +20,7 @@ class _CalendarPageState extends State<CalendarPage> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
+  String? _selectedTime;
 
   late final ValueNotifier<List<Task>> _selectedTasks;
   TaskController controller = TaskController();
@@ -32,7 +36,7 @@ class _CalendarPageState extends State<CalendarPage> {
 
 // Méthode permettant de changer le jour selectionné avec le jour selectionné sur le calendrier
   void onDaySelected(DateTime selectedDay, DateTime focusedDay) {
-    if (_selectedDay != selectedDay) {
+    if (!isSameDay(_selectedDay, focusedDay)) {
       setState(() {
         _selectedDay = selectedDay;
         _focusedDay = focusedDay;
@@ -42,7 +46,7 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   List<Task> getTaskByDay(DateTime day) {
-    return controller.tasksDay[day] ?? [];
+    return controller.tasks[day] ?? [];
   }
 
   Future<void> addTask(BuildContext context) {
@@ -54,38 +58,69 @@ class _CalendarPageState extends State<CalendarPage> {
               title: const Text('Ajouter une tâche!'),
               content: Container(
                   padding: EdgeInsets.all(8),
-                  child: ElevatedButton(
-                      child: Text("Creer tache"),
-                      onPressed: () {
-                        setState(() {
-                          NotificationService().showNotification(
-                              title: 'Tache1', body: 'Ajouté!');
-                          // Verifie si la journée existe dans la Map si ou ajoute une tache dans la lsite associé
-                          if (controller.tasksDay.containsKey(_selectedDay)) {
-                            controller.tasksDay[_selectedDay]!.add(Task(
-                              title: "Tache test",
-                              description: "Test",
-                              start: DateTime.now(),
-                              end: DateTime.now(),
-                              date: DateTime.now(),
-                              isNotification: false,
-                            ));
-                            // Si la journée n'existe pas dans la map, créer une nouvelle entrée avec une liste contenant la nouvelle tâche.
-                          } else {
-                            controller.tasksDay[_selectedDay!] = [
-                              Task(
-                                title: "Tache test",
-                                description: "Test",
-                                start: DateTime.now(),
-                                end: DateTime.now(),
-                                date: DateTime.now(),
-                                isNotification: false,
-                              )
-                            ];
-                          }
-                          _selectedTasks.value = getTaskByDay(_selectedDay!);
-                        });
-                      })));
+                  child: Column(
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          DatePicker.showTimePicker(context,
+                              showTitleActions: true, onChanged: (date) {
+                            date.timeZoneOffset.inHours.toString();
+                          }, onConfirm: (time) {
+                            _selectedTime = DateFormat("HH-mm").format(time);
+                            controller.parseDateHour(time);
+                            print(controller.parseDateHour(time));
+                          }, locale: LocaleType.fr);
+                        },
+                        child: const Text("Début"),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          DatePicker.showTimePicker(context,
+                              showTitleActions: true, onChanged: (date) {
+                            date.timeZoneOffset.inHours.toString();
+                          }, onConfirm: (time) {
+                            _selectedTime = DateFormat("HH-mm").format(time);
+                            controller.parseDateHour(time);
+                            print(controller.parseDateHour(time));
+                          }, locale: LocaleType.fr);
+                        },
+                        child: const Text("Fin"),
+                      ),
+                      ElevatedButton(
+                          child: Text("Creer tache"),
+                          onPressed: () {
+                            setState(() {
+                              NotificationService().showNotification(
+                                  title: 'Tache1', body: 'Ajouté!');
+                              // Verifie si la journée existe dans la Map si ou ajoute une tache dans la lsite associé
+                              if (controller.tasks.containsKey(_selectedDay)) {
+                                controller.tasks[_selectedDay]!.add(Task(
+                                  title: "Tache test",
+                                  description: "Test",
+                                  start: DateTime.now(),
+                                  end: DateTime.now(),
+                                  date: DateTime.now(),
+                                  isNotification: false,
+                                ));
+                                // Si la journée n'existe pas dans la map, créer une nouvelle entrée avec une liste contenant la nouvelle tâche.
+                              } else {
+                                controller.tasks[_selectedDay!] = [
+                                  Task(
+                                    title: "Tache test",
+                                    description: "Test",
+                                    start: DateTime.now(),
+                                    end: DateTime.now(),
+                                    date: DateTime.now(),
+                                    isNotification: false,
+                                  )
+                                ];
+                              }
+                              _selectedTasks.value =
+                                  getTaskByDay(_selectedDay!);
+                            });
+                          }),
+                    ],
+                  )));
         });
   }
 
@@ -96,7 +131,8 @@ class _CalendarPageState extends State<CalendarPage> {
         onPressed: () {
           addTask(context);
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
+        backgroundColor: amberCustom,
       ),
       body: Column(children: [
         TableCalendar(
