@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:task_calendar/controller/services/notification.dart';
+import 'package:task_calendar/theme.dart';
 import 'package:task_calendar/view/dashboard.dart';
 
 void main() {
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: amberCustom),
         useMaterial3: true,
       ),
       home: const BottomNavBarWidget(),
