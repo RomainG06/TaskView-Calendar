@@ -1,12 +1,23 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:task_calendar/controller/services/api.dart';
 import 'package:task_calendar/model/task.dart';
 
 class TaskController {
   // Structure de donnée Map Date - ListTaches
   Map<DateTime, List<Task>> tasks = {};
+  List<Task> allTasks = [];
+
+// Récupère toutes les tâches tout jours confondus
+  List<Task> getAllTask() {
+    tasks.values.forEach((taskList) {
+      allTasks.addAll(taskList);
+    });
+    return allTasks;
+  }
 
 // convertir la liste de tache en Map et la récupère des SharedPreferences
   loadTasks() async {
@@ -76,7 +87,17 @@ class TaskController {
     return "${day.toUpperCase()} ${dayMonth.toUpperCase()} $year";
   }
 
-  void sendTaskToServer() {}
+// Envoi des taches au serveur d'exemple
+  void sendTaskToServer() async {
+    var tasksSend = getAllTask();
+    try {
+      // Appel du service
+      Response response = await await Api().sendTasks(tasksSend);
+      print(response);
+    } on DioException catch (e) {
+      print(e.response!.data);
+    }
+  }
 
 // Récupère la liste de tâche d'un jour
   List<Task> getTaskByDay(DateTime day) {

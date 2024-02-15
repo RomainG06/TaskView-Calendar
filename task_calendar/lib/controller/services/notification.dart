@@ -1,4 +1,6 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 class NotificationService {
   final FlutterLocalNotificationsPlugin notificationsPlugin =
@@ -6,7 +8,7 @@ class NotificationService {
 
   Future<void> initNotification() async {
     AndroidInitializationSettings initializationSettingsAndroid =
-        const AndroidInitializationSettings('task_logo');
+        const AndroidInitializationSettings('@drawable/task_logo.png');
 
     var initializationSettingsIOS = DarwinInitializationSettings(
         requestAlertPermission: true,
@@ -39,7 +41,8 @@ class NotificationService {
     );
   }
 
-  /* Future scheduleNotification(
+// Planifie la notification à un Datetime donnée
+  Future scheduleNotification(
       {int id = 0,
       String? title,
       String? body,
@@ -54,8 +57,8 @@ class NotificationService {
           tz.local,
         ),
         await notificationDetails(),
-        androidAllowWhileIdle: false,
+        androidAllowWhileIdle: true,
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime);
-  } */
+  }
 }
