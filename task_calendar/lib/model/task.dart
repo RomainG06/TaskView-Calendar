@@ -1,8 +1,8 @@
 class Task {
   final String title;
   final String description;
-  final DateTime start;
-  final DateTime end;
+  final String start;
+  final String end;
   final DateTime date;
   final bool isNotification;
 
@@ -20,10 +20,22 @@ class Task {
     return {
       'title': title,
       'description': description,
-      'start': start.toIso8601String(),
-      'end': end.toIso8601String(),
+      'start': start,
+      'end': end,
       'date': date.toIso8601String(),
       'isNotification': isNotification,
     };
+  }
+
+  // Retourne une tache à partir d'un JSON utilisé pour le format en SharedPreference
+  factory Task.fromJson(Map<String, dynamic> json) {
+    return Task(
+      title: json['title'],
+      description: json['description'],
+      start: json['start'],
+      end: json['end'],
+      date: DateTime.parse(json['date']),
+      isNotification: json['isNotification'],
+    );
   }
 }

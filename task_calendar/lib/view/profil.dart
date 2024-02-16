@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:task_calendar/controller/task_controller.dart';
+import 'package:task_calendar/controller/user_controller.dart';
 import 'package:task_calendar/theme.dart';
 
 class ProfilPage extends StatelessWidget {
@@ -39,10 +41,12 @@ class ProfilPage extends StatelessWidget {
             SizedBox(
               width: MediaQuery.of(context).size.height * widthBtnProfile,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  UserController().clearStorage();
+                },
                 style: ElevatedButton.styleFrom(backgroundColor: amberCustom),
                 child: const Text(
-                  "Voir mes Tâches",
+                  "Supprimer les tâches",
                   style: blackTxt,
                 ),
               ),
@@ -50,7 +54,9 @@ class ProfilPage extends StatelessWidget {
             SizedBox(
               width: MediaQuery.of(context).size.height * widthBtnProfile,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  TaskController().sendTaskToServer();
+                },
                 style: ElevatedButton.styleFrom(backgroundColor: amberCustom),
                 child: const Text(
                   "Envoyer les tâches",
