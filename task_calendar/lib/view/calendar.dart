@@ -22,7 +22,6 @@ class _CalendarPageState extends State<CalendarPage> {
 
   @override
   void initState() {
-    // Charge les tâche à l'initialisation
     _selectedDay = _focusedDay;
     _selectedTasks = ValueNotifier(controller.getTaskByDay(_selectedDay!));
     super.initState();
@@ -39,6 +38,7 @@ class _CalendarPageState extends State<CalendarPage> {
     }
   }
 
+// Initialise les taches à partir du storage
   Future<void> initAllTasks() async {
     await controller.loadTasks();
     _selectedTasks.value = controller.getTaskByDay(_selectedDay!);
@@ -103,6 +103,7 @@ class _CalendarPageState extends State<CalendarPage> {
                 ),
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.25,
+                  // Si il y'a des tâches dans la journée les affiches dans la lsite ci dessous
                   child: controller.getTaskByDay(_selectedDay!).isNotEmpty
                       ? ValueListenableBuilder<List<Task>>(
                           valueListenable: _selectedTasks,

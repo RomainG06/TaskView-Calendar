@@ -11,10 +11,9 @@ const TextStyle description = TextStyle(
   fontSize: 20,
 );
 
-const TextStyle date = TextStyle(fontSize: 15, color: Colors.blue);
-
 // Color
 const TextStyle blackTxt = TextStyle(color: Colors.black);
+const TextStyle date = TextStyle(fontSize: 15, color: Colors.blue);
 const Color amberCustom = Color.fromRGBO(255, 193, 7, 1);
 
 // MediaQuery value, utilisation de variable représentant sur 1, la taille de la largeur de l'écran ou la hauteur

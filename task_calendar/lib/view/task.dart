@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:task_calendar/controller/services/notification.dart';
+
 import 'package:task_calendar/controller/task_controller.dart';
 import 'package:task_calendar/model/task.dart';
 import 'package:task_calendar/theme.dart';
@@ -17,6 +18,8 @@ class AddTaskView extends StatefulWidget {
 }
 
 class _AddTaskViewState extends State<AddTaskView> {
+  // Initialisations de mes variables de AddTask
+  late NotificationService notificationSE;
   late TextEditingController titleController;
   late TextEditingController descriptionController;
   String start = "";
@@ -26,9 +29,11 @@ class _AddTaskViewState extends State<AddTaskView> {
 
   @override
   void initState() {
-    super.initState();
     titleController = TextEditingController();
     descriptionController = TextEditingController();
+    notificationSE = NotificationService();
+    initNotification();
+    super.initState();
   }
 
   @override
@@ -38,12 +43,22 @@ class _AddTaskViewState extends State<AddTaskView> {
     super.dispose();
   }
 
+  // Initialise le service de notification
+  Future<void> initNotification() async {
+    await notificationSE.initNotification();
+  }
+
+// Vérifie que les notifications sont activés dan,s le formulaire
+  bool isNotificationEnabled(bool notification) {
+    return notification;
+  }
+
 // Creation de Wigdet Statefull pour la gestion des champs qui changent en fonction de la séléction
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
         scrollable: true,
-        title: const Text('Créer tâche!'),
+        title: const Text('Ajoutez votre tâche'),
         content: Container(
             padding: const EdgeInsets.all(8),
             child: Column(
@@ -107,15 +122,14 @@ class _AddTaskViewState extends State<AddTaskView> {
                       // Vérifie que la têche possède au moins un titre pour l'ajouter
                       if (titleController.text.isNotEmpty) {
                         setState(() {
-                          // Vérifie si les notifications sont activées sur la tache pour scheduler
-                          if (notification == true && start.isNotEmpty) {
-                            debugPrint(
-                                'Notification Scheduled for $scheduleTime');
-                            NotificationService().scheduleNotification(
-                                title: 'Tache notification',
-                                body: '$scheduleTime',
-                                scheduledNotificationDateTime: scheduleTime);
-                          }
+                          // Vérifie si les notifications sont activées sur la tache pour scheduler en fonction de start ! fonction ne fonctionnant pas du à la restriction android pas eu le temps de régler !
+                          /*  if (notification == true && start.isNotEmpty) {
+                            notificationSE.scheduleNotification(
+                                title: titleController.text,
+                                body: "Ne loupez pas votre tâche de : "
+                                    '$scheduleTime',
+                                scheduledNotificationDateTime: scheduleTime); 
+                          } */
 
                           // Verifie si la journée existe dans la Map si ou ajoute une tache dans la liste associé
                           if (widget.controller.tasks
@@ -128,6 +142,12 @@ class _AddTaskViewState extends State<AddTaskView> {
                               date: widget.datetime,
                               isNotification: false,
                             ));
+                            if (isNotificationEnabled(notification)) {
+                              notificationSE.showLocalNotification(
+                                  id: 1,
+                                  title: titleController.text,
+                                  body: "Tâche ajouté avec succés");
+                            }
 
                             // Si la journée n'existe pas dans la map, créer une nouvelle entrée avec une liste contenant la nouvelle tâche.
                           } else {
@@ -141,10 +161,13 @@ class _AddTaskViewState extends State<AddTaskView> {
                                 isNotification: notification,
                               )
                             ];
+                            if (isNotificationEnabled(notification)) {
+                              notificationSE.showLocalNotification(
+                                  id: 1,
+                                  title: titleController.text,
+                                  body: "Tâche ajouté avec succés");
+                            }
                           }
-
-                          /* NotificationService().showNotification(
-                            title: titleController.text, body: 'Ajouté!'); */
 
                           widget.controller.storeTasks();
                           Navigator.of(context).push(

@@ -7,11 +7,13 @@ class UserController {
   User admin = User("admin", "admin", "admin");
   Api api = Api();
 
+// Supprime toutes les tâcges des SharedPreferences
   clearStorage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear();
   }
 
+// Utilise le service de connection avec un user local
   Future<void> connectUser() async {
     try {
       // Connexion au service avec les données utilisateur
