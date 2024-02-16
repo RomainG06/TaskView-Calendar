@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 
 import 'package:table_calendar/table_calendar.dart';
-import 'package:task_calendar/controller/services/notification.dart';
 import 'package:task_calendar/controller/task_controller.dart';
 import 'package:task_calendar/model/task.dart';
 import 'package:task_calendar/theme.dart';
@@ -55,7 +53,6 @@ class _CalendarPageState extends State<CalendarPage> {
               context: context,
               builder: ((context) => AddTaskView(
                     datetime: _selectedDay!,
-                    selectedTasks: _selectedTasks,
                     controller: controller,
                   )));
         },
@@ -133,9 +130,8 @@ class _CalendarPageState extends State<CalendarPage> {
                                         title: Center(
                                           child: Text(
                                             value[index].title,
-                                            style: const TextStyle(
-                                                color: amberCustom,
-                                                fontSize: 25),
+                                            style:
+                                                const TextStyle(fontSize: 25),
                                           ),
                                         ),
                                         subtitle: Center(
@@ -165,218 +161,5 @@ class _CalendarPageState extends State<CalendarPage> {
             }),
       ),
     );
-  }
-
-  Future<void> addTask(BuildContext context) {
-    /* late String title;
-    late String description;
-    String start = "";
-    String end = "";
-    late DateTime _date;
-    bool notification = false; */
-    return showDialog<void>(
-        context: context,
-        builder: (BuildContext context) {
-          return ADDDDDD(); /* AlertDialog(
-              scrollable: true,
-              title: const Text('Créer tâche!'),
-              content: Container(
-                  padding: const EdgeInsets.all(8),
-                  child: Column(
-                    children: [
-                      TextField(
-                        decoration: const InputDecoration(labelText: 'Titre'),
-                        controller: TextEditingController(),
-                        onChanged: (value) {
-                          title = value;
-                        },
-                      ),
-                      TextField(
-                        decoration:
-                            const InputDecoration(labelText: 'Description'),
-                        controller: TextEditingController(),
-                        onChanged: (value) {
-                          description = value;
-                        },
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          DatePicker.showTimePicker(context,
-                              showTitleActions: true, onChanged: (date) {
-                            date.timeZoneOffset.inHours.toString();
-                          }, onConfirm: (time) {
-                            setState(() {
-                              start = controller.parseDateHour(time);
-                            });
-                          }, locale: LocaleType.fr);
-                        },
-                        child: Text(start == "" ? "Début" : start),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          DatePicker.showTimePicker(context,
-                              showTitleActions: true, onChanged: (date) {
-                            date.timeZoneOffset.inHours.toString();
-                          }, onConfirm: (time) {
-                            end = controller.parseDateHour(time);
-                          }, locale: LocaleType.fr);
-                        },
-                        child: const Text("Fin"),
-                      ),
-                      CheckboxListTile(
-                        title: Text('Notification'),
-                        value: notification,
-                        onChanged: (value) {
-                          setState(() {
-                            notification = value!;
-                          });
-                        },
-                      ),
-                      ElevatedButton(
-                          child: Text("Ajouter"),
-                          onPressed: () {
-                            setState(() {
-                              NotificationService().showNotification(
-                                  title: 'Tache1', body: 'Ajouté!');
-                              if (controller.tasks.containsKey(_selectedDay)) {
-                                controller.tasks[_selectedDay]!.add(Task(
-                                  title: "title",
-                                  description: "description",
-                                  start: "start",
-                                  end: "end",
-                                  date: _selectedDay!,
-                                  isNotification: notification,
-                                ));
-                              } else {
-                                controller.tasks[_selectedDay!] = [
-                                  Task(
-                                    title: "title",
-                                    description: "description",
-                                    start: "start",
-                                    end: "end",
-                                    date: _selectedDay!,
-                                    isNotification: notification,
-                                  )
-                                ];
-                              }
-                              _selectedTasks.value =
-                                  controller.getTaskByDay(_selectedDay!);
-                              controller.storeTasks();
-                            });
-                          }),
-                    ],
-                  ))); */
-        });
-  }
-
-  AlertDialog ADDDDDD() {
-    TextEditingController? titleController;
-    TextEditingController? descriptionController;
-    String start = "";
-    String end = "";
-    bool notification = false;
-    DateTime scheduleTime = DateTime.now();
-    return AlertDialog(
-        scrollable: true,
-        title: const Text('Créer tâche!'),
-        content: Container(
-            padding: const EdgeInsets.all(8),
-            child: Column(
-              children: [
-                TextField(
-                  decoration: const InputDecoration(labelText: 'Titre'),
-                  controller: titleController,
-                ),
-                TextField(
-                  decoration: const InputDecoration(labelText: 'Description'),
-                  controller: descriptionController,
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    DatePicker.showTimePicker(context,
-                        showTitleActions: true,
-                        onChanged: (date) => scheduleTime = date,
-                        onConfirm: (time) {
-                          setState(() {
-                            start = controller.parseDateHour(time);
-                          });
-                        },
-                        locale: LocaleType.fr);
-                  },
-                  child: Text(start == "" ? "Début" : start),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    DatePicker.showTimePicker(context, showTitleActions: true,
-                        onChanged: (date) {
-                      date.timeZoneOffset.inHours.toString();
-                    }, onConfirm: (time) {
-                      setState(() {
-                        end = controller.parseDateHour(time);
-                      });
-                    }, locale: LocaleType.fr);
-                  },
-                  child: Text(end == "" ? "Fin" : end),
-                ),
-                CheckboxListTile(
-                  title: const Text('Notification'),
-                  value: notification,
-                  onChanged: (value) {
-                    setState(() {
-                      notification = value!;
-                    });
-                  },
-                ),
-                ElevatedButton(
-                    child: const Text("Ajouter"),
-                    onPressed: () {
-                      setState(() {
-                        // Vérifie si les notifications sont activées sur la tache pour scheduler
-                        if (notification == true && start.isNotEmpty) {
-                          debugPrint(
-                              'Notification Scheduled for $scheduleTime');
-                          NotificationService().scheduleNotification(
-                              title: 'Tache notification',
-                              body: '$scheduleTime',
-                              scheduledNotificationDateTime: scheduleTime);
-                        }
-
-                        // Verifie si la journée existe dans la Map si ou ajoute une tache dans la liste associé
-                        if (controller.tasks.containsKey(_selectedDay)) {
-                          controller.tasks[_selectedDay]!.add(Task(
-                            title: titleController!.text,
-                            description: descriptionController!.text,
-                            start: start,
-                            end: end,
-                            date: _selectedDay!,
-                            isNotification: false,
-                          ));
-                          // Si la journée n'existe pas dans la map, créer une nouvelle entrée avec une liste contenant la nouvelle tâche.
-                        } else {
-                          controller.tasks[_selectedDay!] = [
-                            Task(
-                              title: titleController!.text,
-                              description: descriptionController!.text,
-                              start: start,
-                              end: end,
-                              date: _selectedDay!,
-                              isNotification: notification,
-                            )
-                          ];
-                        }
-
-                        /* NotificationService().showNotification(
-                            title: titleController.text, body: 'Ajouté!'); */
-
-                        controller.storeTasks();
-                        _selectedTasks.value = controller.getTaskByDay(
-                          _selectedDay!,
-                        );
-
-                        Navigator.pop(context);
-                      });
-                    })
-              ],
-            )));
   }
 }

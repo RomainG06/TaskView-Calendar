@@ -25,9 +25,4 @@ class UserController {
     // simulation de key de user connected
     prefs.setBool("user", true);
   }
-
-  Future<bool> checkUser() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.containsKey('user');
-  }
 }

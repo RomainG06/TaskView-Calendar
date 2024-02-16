@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:task_calendar/controller/task_controller.dart';
 import 'package:task_calendar/controller/user_controller.dart';
 import 'package:task_calendar/theme.dart';
 
@@ -42,6 +41,7 @@ class ProfilPage extends StatelessWidget {
               width: MediaQuery.of(context).size.height * widthBtnProfile,
               child: ElevatedButton(
                 onPressed: () {
+                  // Supprimer toutes les tâches
                   UserController().clearStorage();
                 },
                 style: ElevatedButton.styleFrom(backgroundColor: amberCustom),
@@ -55,7 +55,10 @@ class ProfilPage extends StatelessWidget {
               width: MediaQuery.of(context).size.height * widthBtnProfile,
               child: ElevatedButton(
                 onPressed: () {
-                  TaskController().sendTaskToServer();
+                  // ! Simulation d'envoi des tâches au serveur ! //
+                  /* UserController().connectUser(); */
+                  // ! Simulation d'envoi des tâches au serveur !
+                  /* TaskController().sendTaskToServer(); */
                 },
                 style: ElevatedButton.styleFrom(backgroundColor: amberCustom),
                 child: const Text(

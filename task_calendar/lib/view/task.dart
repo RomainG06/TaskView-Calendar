@@ -8,12 +8,8 @@ import 'package:task_calendar/view/dashboard.dart';
 
 class AddTaskView extends StatefulWidget {
   const AddTaskView(
-      {super.key,
-      required this.datetime,
-      required this.selectedTasks,
-      required this.controller});
+      {super.key, required this.datetime, required this.controller});
   final DateTime datetime;
-  final ValueNotifier<List<Task>> selectedTasks;
   final TaskController controller;
 
   @override
@@ -42,6 +38,7 @@ class _AddTaskViewState extends State<AddTaskView> {
     super.dispose();
   }
 
+// Creation de Wigdet Statefull pour la gestion des champs qui changent en fonction de la séléction
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -102,56 +99,63 @@ class _AddTaskViewState extends State<AddTaskView> {
                   },
                 ),
                 ElevatedButton(
-                    child: const Text("Ajouter"),
+                    child: const Text(
+                      "Ajouter",
+                      style: TextStyle(color: Colors.green),
+                    ),
                     onPressed: () {
-                      setState(() {
-                        // Vérifie si les notifications sont activées sur la tache pour scheduler
-                        if (notification == true && start.isNotEmpty) {
-                          debugPrint(
-                              'Notification Scheduled for $scheduleTime');
-                          NotificationService().scheduleNotification(
-                              title: 'Tache notification',
-                              body: '$scheduleTime',
-                              scheduledNotificationDateTime: scheduleTime);
-                        }
+                      // Vérifie que la têche possède au moins un titre pour l'ajouter
+                      if (titleController.text.isNotEmpty) {
+                        setState(() {
+                          // Vérifie si les notifications sont activées sur la tache pour scheduler
+                          if (notification == true && start.isNotEmpty) {
+                            debugPrint(
+                                'Notification Scheduled for $scheduleTime');
+                            NotificationService().scheduleNotification(
+                                title: 'Tache notification',
+                                body: '$scheduleTime',
+                                scheduledNotificationDateTime: scheduleTime);
+                          }
 
-                        // Verifie si la journée existe dans la Map si ou ajoute une tache dans la liste associé
-                        if (widget.controller.tasks
-                            .containsKey(widget.datetime)) {
-                          widget.controller.tasks[widget.datetime]!.add(Task(
-                            title: titleController.text,
-                            description: descriptionController.text,
-                            start: start,
-                            end: end,
-                            date: widget.datetime,
-                            isNotification: false,
-                          ));
-                          // Si la journée n'existe pas dans la map, créer une nouvelle entrée avec une liste contenant la nouvelle tâche.
-                        } else {
-                          widget.controller.tasks[widget.datetime] = [
-                            Task(
+                          // Verifie si la journée existe dans la Map si ou ajoute une tache dans la liste associé
+                          if (widget.controller.tasks
+                              .containsKey(widget.datetime)) {
+                            widget.controller.tasks[widget.datetime]!.add(Task(
                               title: titleController.text,
                               description: descriptionController.text,
                               start: start,
                               end: end,
                               date: widget.datetime,
-                              isNotification: notification,
-                            )
-                          ];
-                        }
+                              isNotification: false,
+                            ));
 
-                        /* NotificationService().showNotification(
+                            // Si la journée n'existe pas dans la map, créer une nouvelle entrée avec une liste contenant la nouvelle tâche.
+                          } else {
+                            widget.controller.tasks[widget.datetime] = [
+                              Task(
+                                title: titleController.text,
+                                description: descriptionController.text,
+                                start: start,
+                                end: end,
+                                date: widget.datetime,
+                                isNotification: notification,
+                              )
+                            ];
+                          }
+
+                          /* NotificationService().showNotification(
                             title: titleController.text, body: 'Ajouté!'); */
 
-                        widget.controller.storeTasks();
-                        /* widget.selectedTasks.value =
-                            widget.controller.getTaskByDay(widget.datetime); */
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const BottomNavBarWidget(),
-                          ),
-                        );
-                      });
+                          widget.controller.storeTasks();
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const BottomNavBarWidget(),
+                            ),
+                          );
+                        });
+                      } else {
+                        return;
+                      }
                     })
               ],
             )));
