@@ -32,7 +32,6 @@ class Api {
       );
       return response.data;
     } on DioException catch (e) {
-      print(e.response?.data);
       throw e.response?.data;
     }
   }
@@ -52,7 +51,6 @@ class Api {
       );
       return response.data;
     } on DioException catch (e) {
-      print(e.response?.data);
       throw e.response?.data;
     }
   }

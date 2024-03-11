@@ -103,28 +103,21 @@ class _CalendarPageState extends State<CalendarPage> {
                 ),
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.25,
-                  // Si il y'a des tâches dans la journée les affiches dans la lsite ci dessous
+                  // Si il y'a des tâches dans la journée les affiches dans la liste ci dessous
                   child: controller.getTaskByDay(_selectedDay!).isNotEmpty
                       ? ValueListenableBuilder<List<Task>>(
                           valueListenable: _selectedTasks,
                           builder: (context, value, child) {
-                            return ListView.builder(
-                              itemCount: value.length,
-                              itemBuilder: (context, index) {
-                                return Padding(
-                                  padding: const EdgeInsets.all(6.0),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                        color: Colors.black,
-                                        width: 0.5,
-                                      ),
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    child: ListTile(
+                            return Scrollbar(
+                              child: ListView.builder(
+                                itemCount: value.length,
+                                itemBuilder: (context, index) {
+                                  return Padding(
+                                      padding: const EdgeInsets.all(6.0),
+                                      child: ListTile(
                                         leading: value[index].start.isNotEmpty
                                             ? Text(
-                                                "start: ${value[index].start}",
+                                                "|${value[index].start}\n|${value[index].end}",
                                                 style: date,
                                               )
                                             : const Text(""),
@@ -132,25 +125,19 @@ class _CalendarPageState extends State<CalendarPage> {
                                           child: Text(
                                             value[index].title,
                                             style:
-                                                const TextStyle(fontSize: 25),
+                                                const TextStyle(fontSize: 20),
                                           ),
                                         ),
                                         subtitle: Center(
                                           child: Text(
                                             value[index].description,
                                             style:
-                                                const TextStyle(fontSize: 18),
+                                                const TextStyle(fontSize: 15),
                                           ),
                                         ),
-                                        trailing: value[index].end.isNotEmpty
-                                            ? Text(
-                                                "end : ${value[index].end}",
-                                                style: date,
-                                              )
-                                            : const Text("")),
-                                  ),
-                                );
-                              },
+                                      ));
+                                },
+                              ),
                             );
                           },
                         )
