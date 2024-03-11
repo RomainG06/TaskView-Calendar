@@ -7,24 +7,31 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:task_calendar/main.dart';
+import 'package:task_calendar/controller/task_controller.dart';
+import 'package:task_calendar/view/task.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+  testWidgets('AddTaskView test', (WidgetTester tester) async {
+    TaskController controllerTest = TaskController();
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+    await tester.pumpWidget(MaterialApp(
+        home: AddTaskView(
+      datetime: DateTime.now(),
+      controller: controllerTest,
+    )));
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    // Verifie que le Widget initialise les TextController
+    expect(find.byType(TextField), findsNWidgets(2));
+
+    // Test UI elements
+    expect(find.text('Ajoutez votre tâche'), findsOneWidget);
+    expect(find.text('Titre'), findsOneWidget);
+    expect(find.text('Description'), findsOneWidget);
+    expect(find.byType(ElevatedButton), findsNWidgets(3));
+    expect(find.byType(CheckboxListTile), findsOneWidget);
 
     // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
+    //await tester.tap(find.byType(ElevatedButton));
     await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
   });
 }
