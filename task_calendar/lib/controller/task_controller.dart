@@ -13,9 +13,9 @@ class TaskController {
 
 // Récupère toutes les tâches tout jours confondus
   List<Task> getAllTask() {
-    tasks.values.forEach((taskList) {
+    for (var taskList in tasks.values) {
       allTasks.addAll(taskList);
-    });
+    }
     return allTasks;
   }
 
